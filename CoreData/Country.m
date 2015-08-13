@@ -11,14 +11,14 @@
 
 @implementation Country
 
+@dynamic alpha2Code;
+@dynamic area;
 @dynamic capital;
 @dynamic latitude;
 @dynamic longitude;
 @dynamic name;
 @dynamic population;
-@dynamic region;
 @dynamic subregion;
-@dynamic area;
-@dynamic alpha2Code;
+@dynamic region;
 
 @end

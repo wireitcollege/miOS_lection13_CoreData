@@ -7,7 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0213502F1B7C899100FA99C7 /* Country.m in Sources */ = {isa = PBXBuildFile; fileRef = 0213502E1B7C899100FA99C7 /* Country.m */; };
+		021350341B7C971100FA99C7 /* Model1to2.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 021350331B7C971100FA99C7 /* Model1to2.xcmappingmodel */; };
+		021350371B7C97DF00FA99C7 /* CountryMigrationPolicy.m in Sources */ = {isa = PBXBuildFile; fileRef = 021350361B7C97DF00FA99C7 /* CountryMigrationPolicy.m */; };
+		0213503A1B7C9A2500FA99C7 /* Country.m in Sources */ = {isa = PBXBuildFile; fileRef = 021350391B7C9A2500FA99C7 /* Country.m */; };
+		0213503D1B7C9A2500FA99C7 /* Region.m in Sources */ = {isa = PBXBuildFile; fileRef = 0213503C1B7C9A2500FA99C7 /* Region.m */; };
 		025309BF1B79CD880024863D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 025309BE1B79CD880024863D /* main.m */; };
 		025309C21B79CD880024863D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 025309C11B79CD880024863D /* AppDelegate.m */; };
 		025309C51B79CD880024863D /* CoreData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 025309C31B79CD880024863D /* CoreData.xcdatamodeld */; };
@@ -30,9 +33,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0213502D1B7C899100FA99C7 /* Country.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Country.h; sourceTree = "<group>"; };
-		0213502E1B7C899100FA99C7 /* Country.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Country.m; sourceTree = "<group>"; };
 		021350301B7C8A9400FA99C7 /* CoreData 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "CoreData 2.xcdatamodel"; sourceTree = "<group>"; };
+		021350331B7C971100FA99C7 /* Model1to2.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = Model1to2.xcmappingmodel; sourceTree = "<group>"; };
+		021350351B7C97DF00FA99C7 /* CountryMigrationPolicy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CountryMigrationPolicy.h; sourceTree = "<group>"; };
+		021350361B7C97DF00FA99C7 /* CountryMigrationPolicy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CountryMigrationPolicy.m; sourceTree = "<group>"; };
+		021350381B7C9A2500FA99C7 /* Country.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Country.h; sourceTree = "<group>"; };
+		021350391B7C9A2500FA99C7 /* Country.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Country.m; sourceTree = "<group>"; };
+		0213503B1B7C9A2500FA99C7 /* Region.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Region.h; sourceTree = "<group>"; };
+		0213503C1B7C9A2500FA99C7 /* Region.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Region.m; sourceTree = "<group>"; };
 		025309B91B79CD870024863D /* CoreData.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CoreData.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		025309BD1B79CD880024863D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		025309BE1B79CD880024863D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -98,7 +106,6 @@
 				025309C91B79CD880024863D /* Main.storyboard */,
 				025309CC1B79CD880024863D /* Images.xcassets */,
 				025309CE1B79CD880024863D /* LaunchScreen.xib */,
-				025309C31B79CD880024863D /* CoreData.xcdatamodeld */,
 				025309BC1B79CD880024863D /* Supporting Files */,
 			);
 			path = CoreData;
@@ -107,6 +114,10 @@
 		025309BC1B79CD880024863D /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				021350351B7C97DF00FA99C7 /* CountryMigrationPolicy.h */,
+				021350361B7C97DF00FA99C7 /* CountryMigrationPolicy.m */,
+				021350331B7C971100FA99C7 /* Model1to2.xcmappingmodel */,
+				025309C31B79CD880024863D /* CoreData.xcdatamodeld */,
 				025309BD1B79CD880024863D /* Info.plist */,
 				025309BE1B79CD880024863D /* main.m */,
 			);
@@ -133,8 +144,10 @@
 		025309E81B79D4280024863D /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				0213502D1B7C899100FA99C7 /* Country.h */,
-				0213502E1B7C899100FA99C7 /* Country.m */,
+				0213503B1B7C9A2500FA99C7 /* Region.h */,
+				0213503C1B7C9A2500FA99C7 /* Region.m */,
+				021350381B7C9A2500FA99C7 /* Country.h */,
+				021350391B7C9A2500FA99C7 /* Country.m */,
 				025309E91B79E23A0024863D /* Country+API.h */,
 				025309EA1B79E23A0024863D /* Country+API.m */,
 			);
@@ -241,11 +254,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0213503A1B7C9A2500FA99C7 /* Country.m in Sources */,
+				021350341B7C971100FA99C7 /* Model1to2.xcmappingmodel in Sources */,
+				021350371B7C97DF00FA99C7 /* CountryMigrationPolicy.m in Sources */,
 				025309C21B79CD880024863D /* AppDelegate.m in Sources */,
 				025309EB1B79E23A0024863D /* Country+API.m in Sources */,
 				025309BF1B79CD880024863D /* main.m in Sources */,
+				0213503D1B7C9A2500FA99C7 /* Region.m in Sources */,
 				025309C81B79CD880024863D /* ViewController.m in Sources */,
-				0213502F1B7C899100FA99C7 /* Country.m in Sources */,
 				025309C51B79CD880024863D /* CoreData.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

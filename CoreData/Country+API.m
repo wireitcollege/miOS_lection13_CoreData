@@ -35,6 +35,10 @@
     country.capital = dictionary[@"capital"];
     country.region = dictionary[@"region"];
     country.population = dictionary[@"population"];
+    country.area = dictionary[@"population"];
+    country.subregion = dictionary[@"subregion"];
+    country.alpha2Code = dictionary[@"alpha2Code"];
+    
     
     NSArray *latlng = dictionary[@"latlng"];
     if (latlng.count == 2) {
