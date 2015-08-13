@@ -15,6 +15,8 @@
 		025309CD1B79CD880024863D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 025309CC1B79CD880024863D /* Images.xcassets */; };
 		025309D01B79CD880024863D /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 025309CE1B79CD880024863D /* LaunchScreen.xib */; };
 		025309DC1B79CD880024863D /* CoreDataTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 025309DB1B79CD880024863D /* CoreDataTests.m */; };
+		025309E71B79D4220024863D /* Country.m in Sources */ = {isa = PBXBuildFile; fileRef = 025309E61B79D4220024863D /* Country.m */; };
+		025309EB1B79E23A0024863D /* Country+API.m in Sources */ = {isa = PBXBuildFile; fileRef = 025309EA1B79E23A0024863D /* Country+API.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,6 +44,10 @@
 		025309D51B79CD880024863D /* CoreDataTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CoreDataTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		025309DA1B79CD880024863D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		025309DB1B79CD880024863D /* CoreDataTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CoreDataTests.m; sourceTree = "<group>"; };
+		025309E51B79D4220024863D /* Country.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Country.h; sourceTree = "<group>"; };
+		025309E61B79D4220024863D /* Country.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Country.m; sourceTree = "<group>"; };
+		025309E91B79E23A0024863D /* Country+API.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Country+API.h"; sourceTree = "<group>"; };
+		025309EA1B79E23A0024863D /* Country+API.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Country+API.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +89,7 @@
 		025309BB1B79CD870024863D /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
+				025309E81B79D4280024863D /* Model */,
 				025309C01B79CD880024863D /* AppDelegate.h */,
 				025309C11B79CD880024863D /* AppDelegate.m */,
 				025309C61B79CD880024863D /* ViewController.h */,
@@ -120,6 +127,17 @@
 				025309DA1B79CD880024863D /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		025309E81B79D4280024863D /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				025309E51B79D4220024863D /* Country.h */,
+				025309E61B79D4220024863D /* Country.m */,
+				025309E91B79E23A0024863D /* Country+API.h */,
+				025309EA1B79E23A0024863D /* Country+API.m */,
+			);
+			name = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -223,9 +241,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				025309C21B79CD880024863D /* AppDelegate.m in Sources */,
+				025309EB1B79E23A0024863D /* Country+API.m in Sources */,
 				025309BF1B79CD880024863D /* main.m in Sources */,
 				025309C81B79CD880024863D /* ViewController.m in Sources */,
 				025309C51B79CD880024863D /* CoreData.xcdatamodeld in Sources */,
+				025309E71B79D4220024863D /* Country.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
