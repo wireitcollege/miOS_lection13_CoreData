@@ -7,6 +7,7 @@
 //
 
 #import "Country+API.h"
+#import "NSManagedObject+ActiveRecord.h"
 
 @implementation Country (API)
 
@@ -33,7 +34,8 @@
     }
     
     country.capital = dictionary[@"capital"];
-    country.region = dictionary[@"region"];
+    NSString *regionName = dictionary[@"region"];
+    country.region = [Region findFirstByAttribute:@"name" withValue:regionName inContext:context];
     country.population = dictionary[@"population"];
     country.area = dictionary[@"population"];
     country.subregion = dictionary[@"subregion"];
@@ -44,10 +46,6 @@
     if (latlng.count == 2) {
         country.latitude = latlng.firstObject;
         country.longitude = latlng.lastObject;
-    }
-    
-    if (![context save:&error]) {
-        NSLog(@"%@", error);
     }
     
     return country;

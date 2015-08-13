@@ -10,10 +10,11 @@
 #import "Country.h"
 #import "Country+API.h"
 #import "AppDelegate.h"
+#import "NSManagedObject+ActiveRecord.h"
 
-@interface ViewController ()
+@interface ViewController () <NSFetchedResultsControllerDelegate>
 
-@property (nonatomic, strong) NSArray *countries;
+@property (nonatomic, strong) NSFetchedResultsController *fetchedResults;
 
 @end
 
@@ -22,6 +23,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+    
+    self.fetchedResults = [Country fetchAllSortedBy:@"name" ascending:YES withPredicate:nil groupBy:nil];
+    self.fetchedResults.delegate = self;
+
 }
 
 - (void)didReceiveMemoryWarning {
@@ -29,23 +34,8 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (NSArray *)countries {
-    if (!_countries) {
-        _countries = @[];
-        [self refetchData];
-    }
-    return _countries;
-}
-
 - (NSManagedObjectContext *)managedObjectContext {
     return [(AppDelegate *)[UIApplication sharedApplication].delegate managedObjectContext];
-}
-
-- (void)refetchData {
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:NSStringFromClass([Country class])];
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES]];
-    NSError *error;
-    self.countries = [[self managedObjectContext] executeFetchRequest:request error:&error];
 }
 
 #pragma mark - Refresh
@@ -54,19 +44,24 @@
     NSLog(@"Wants refresh");
     
     [self downloadListOfCountries:^(id result) {
-        [self.refreshControl endRefreshing];
+        
         if (result) {
             NSError *error;
             NSArray *objects = [NSJSONSerialization JSONObjectWithData:result options:0 error:&error];
             if (!error) {
                 for (NSDictionary *dictionary in objects) {
                     [Country countryWithDictionary:dictionary inContext:[self managedObjectContext]];
+                    
+                    
+                }
+                
+                if (![[self managedObjectContext] save:&error]) {
+                    NSLog(@"%@", error);
                 }
             }
-            [self refetchData];
-            [self.tableView reloadData];
         }
         
+        [self.refreshControl endRefreshing];
     }];
 }
 
@@ -88,24 +83,86 @@
     });
 }
 
+#pragma mark - UIFetchedResultsController Delegate
+
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
+    [self.tableView beginUpdates];
+}
+
+- (void)controller:(NSFetchedResultsController *)controller
+   didChangeObject:(id)anObject
+       atIndexPath:(NSIndexPath *)indexPath
+     forChangeType:(NSFetchedResultsChangeType)type
+      newIndexPath:(NSIndexPath *)newIndexPath
+{
+    switch (type) {
+        case NSFetchedResultsChangeDelete:
+            [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:(UITableViewRowAnimationFade)];
+            break;
+        case NSFetchedResultsChangeInsert:
+            [self.tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:(UITableViewRowAnimationFade)];
+            break;
+        case NSFetchedResultsChangeMove:
+            [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:(UITableViewRowAnimationFade)];
+            [self.tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:(UITableViewRowAnimationFade)];
+            break;
+        case NSFetchedResultsChangeUpdate:
+            [self configutateCell:[self.tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
+            break;
+        default:
+            break;
+    }
+}
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+    [self.tableView endUpdates];
+}
+
+- (void)configutateCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    Country *country = [self.fetchedResults objectAtIndexPath:indexPath];
+    cell.textLabel.text = country.name;
+}
+
 #pragma mark - UITableView DataSource
 
-//- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-//    return 1;
-//}
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return [[self.fetchedResults sections] count];
+}
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.countries.count;
+    id  sectionInfo =
+    [[self.fetchedResults sections] objectAtIndex:section];
+    return [sectionInfo numberOfObjects];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *cellIdentifier = @"Country Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-    Country *country = self.countries[indexPath.row];
-    cell.textLabel.text = country.name;
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
+    [self configutateCell:cell atIndexPath:indexPath];
     return cell;
 }
 
 #pragma mark - UITableView Delegate
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    return YES;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        Country *countryToRemove = [self.fetchedResults objectAtIndexPath:indexPath];
+        [[self managedObjectContext] deleteObject:countryToRemove];
+        [[self managedObjectContext] save:nil];
+    }
+}
+
+//- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
+//    return UITableViewCellEditingStyleDelete;
+//}
+
+- (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return @"Remove";
+}
 
 @end
