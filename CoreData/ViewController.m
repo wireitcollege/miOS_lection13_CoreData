@@ -8,9 +8,9 @@
 
 #import "ViewController.h"
 #import "Country.h"
-#import "Country+API.h"
 #import "AppDelegate.h"
 #import "NSManagedObject+ActiveRecord.h"
+#import "Network.h"
 
 @interface ViewController () <NSFetchedResultsControllerDelegate>
 
@@ -23,10 +23,17 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    
     self.fetchedResults = [Country fetchAllSortedBy:@"name" ascending:YES withPredicate:nil groupBy:nil];
-    self.fetchedResults.delegate = self;
+}
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    self.fetchedResults.delegate = self;
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    self.fetchedResults.delegate = nil;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -43,45 +50,25 @@
 - (IBAction)refresh:(UIRefreshControl *)sender {
     NSLog(@"Wants refresh");
     
-    [self downloadListOfCountries:^(id result) {
-        
-        if (result) {
-            NSError *error;
-            NSArray *objects = [NSJSONSerialization JSONObjectWithData:result options:0 error:&error];
-            if (!error) {
-                for (NSDictionary *dictionary in objects) {
-                    [Country countryWithDictionary:dictionary inContext:[self managedObjectContext]];
-                    
-                    
-                }
-                
-                if (![[self managedObjectContext] save:&error]) {
-                    NSLog(@"%@", error);
-                }
-            }
+    [[Network layer] getCountries:^(id result) {
+       [self.refreshControl endRefreshing];
+        if ([result isKindOfClass:[NSError class]]) {
+            UIAlertController *alert = [UIAlertController
+                                        alertControllerWithTitle:NSLocalizedString(@"Error", nil)
+                                        message:[(NSError *)result localizedDescription]
+                                        preferredStyle:UIAlertControllerStyleAlert];
+            
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil]];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Retry", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                [self refresh:nil];
+            }]];
+            
+            [self presentViewController:alert animated:YES completion:nil];
         }
-        
-        [self.refreshControl endRefreshing];
     }];
 }
 
-- (void)downloadListOfCountries:(void(^)(id result))completion {
-    NSURL *url = [NSURL URLWithString:@"https://restcountries.eu/rest/v1/all"];
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-        NSData *data = [NSData dataWithContentsOfURL:url];
-        if (completion) {
-            if (data.length) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    completion(data);
-                });
-            } else {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    completion(nil);
-                });
-            }
-        }
-    });
-}
+
 
 #pragma mark - UIFetchedResultsController Delegate
 
