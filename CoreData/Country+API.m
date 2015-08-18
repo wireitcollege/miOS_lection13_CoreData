@@ -8,6 +8,7 @@
 
 #import "Country+API.h"
 #import "NSManagedObject+ActiveRecord.h"
+#import <RestKit/CoreData.h>
 
 @implementation Country (API)
 
@@ -37,7 +38,7 @@
     NSString *regionName = dictionary[@"region"];
     country.region = [Region findFirstByAttribute:@"name" withValue:regionName inContext:context];
     country.population = dictionary[@"population"];
-    country.area = dictionary[@"population"];
+    country.area = dictionary[@"area"];
     country.subregion = dictionary[@"subregion"];
     country.alpha2Code = dictionary[@"alpha2Code"];
     
@@ -49,6 +50,20 @@
     }
     
     return country;
+}
+
++ (RKEntityMapping *)mappingInStore:(RKManagedObjectStore *)store {
+    RKEntityMapping *mapping = [RKEntityMapping mappingForEntityForName:NSStringFromClass([self class]) inManagedObjectStore:store];
+    
+    [mapping addAttributeMappingsFromDictionary: @{@"name": @"name",
+                                                   @"capital": @"capital",
+                                                   @"population": @"population",
+                                                   @"area": @"area",
+                                                   @"subregion": @"subregion",
+                                                   @"alpha2Code": @"alpha2Code"
+                                                   }];
+    [mapping setIdentificationAttributes:@[@"name"]];
+    return mapping;
 }
 
 @end

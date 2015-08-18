@@ -1,1 +1,2 @@
 pod 'PonyDebugger'
+pod 'RestKit'

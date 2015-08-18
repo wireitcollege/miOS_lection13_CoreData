@@ -10,8 +10,15 @@
 #import "Country.h"
 #import "NSManagedObjectContext+MainContext.h"
 #import "Country+API.h"
+#import <RestKit/RestKit.h>
 
 static NSString *const kBaseURL = @"https://restcountries.eu/rest/v1";
+
+@interface Network ()
+
+@property (nonatomic, strong) RKObjectManager *manager;
+
+@end
 
 @implementation Network
 
@@ -25,46 +32,39 @@ static NSString *const kBaseURL = @"https://restcountries.eu/rest/v1";
     return sharedInstance;
 }
 
-- (void)getCountries:(void(^)(id result))completion {
-    NSURL *url = [NSURL URLWithString:[kBaseURL stringByAppendingPathComponent:@"all"]];
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-        NSData *data = [NSData dataWithContentsOfURL:url];
+- (RKObjectManager *)manager {
+    if (!_manager) {
+        _manager = [RKObjectManager managerWithBaseURL:[NSURL URLWithString:kBaseURL]];
+        _manager.managedObjectStore = [RKManagedObjectStore defaultStore];
+        _manager.requestSerializationMIMEType = RKMIMETypeJSON;
+        [self setupDescriptors];
+    }
+    return _manager;
+}
+
+static NSString *const kGetCountriesPath = @"all";
+
+- (void)setupDescriptors {
+    RKResponseDescriptor *responseDescriptor = [RKResponseDescriptor
+                                                responseDescriptorWithMapping:[Country mappingInStore:[RKManagedObjectStore defaultStore]]
+                                                                                            method:RKRequestMethodGET
+                                                                                       pathPattern:kGetCountriesPath
+                                                                                           keyPath:nil
+                                                statusCodes:RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)];
+    [self.manager addResponseDescriptor:responseDescriptor];
+}
+
+- (void)getCountries:(void(^)(id result))completion
+{
+    [self.manager getObjectsAtPath:kGetCountriesPath parameters:nil success:^(RKObjectRequestOperation *operation, RKMappingResult *mappingResult) {
         if (completion) {
-            if (data.length) {
-                NSError *error = nil;
-                NSArray *objects = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
-                if (!error) {
-                    NSManagedObjectContext *context = [NSManagedObjectContext mainContext];
-                    NSMutableArray *countries = [@[] mutableCopy];
-                    for (NSDictionary *dictionary in objects) {
-                        Country *country = [Country countryWithDictionary:dictionary inContext:context];
-                        [countries addObject:country];
-                    }
-                    if (![context save:&error]) {
-                        NSLog(@"%@", error);
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            completion(error);
-                        });
-                    }
-                    
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        completion(countries);
-                    });
-                } else {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        completion(error);
-                    });
-                }
-            } else {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    NSError *error = [NSError errorWithDomain:@"com.CoreData.Network"
-                                                         code:9999
-                                                     userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Data length is Zero", nil)}];
-                    completion(error);
-                });
-            }
+            completion(mappingResult.array);
         }
-    });
+    } failure:^(RKObjectRequestOperation *operation, NSError *error) {
+        if (completion) {
+            completion(error);
+        }
+    }];
 }
 
 @end

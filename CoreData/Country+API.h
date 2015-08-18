@@ -8,9 +8,13 @@
 
 #import "Country.h"
 
+@class RKEntityMapping;
+@class RKManagedObjectStore;
+
 @interface Country (API)
 
 + (Country *)countryWithDictionary:(NSDictionary *)dictionary
                          inContext:(NSManagedObjectContext *)context;
++ (RKEntityMapping *)mappingInStore:(RKManagedObjectStore *)store;
 
 @end
